@@ -1,0 +1,95 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+    background: radial-gradient(#0b0c10, #1f2833);
+    color: aquamarine;
+    font-weight: bold;
+}
+
+.head {
+    display: inline-block;
+    margin-top: 3%;
+    /* color: aquamarine;
+    font-size: 1em;
+    border: 5px solid aquamarine;
+    border-width: 5px;
+    padding: 7px 12px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px aquamarine; */
+}
+
+
+
+/* Puzzle container */
+.whole1 {
+    /* display: flex; */
+    margin: 10px 10px;
+    padding-right: 10px;
+}
+
+/* Puzzle sections with specific widths */
+.eight,
+.five,
+.nine {
+    width: 15%;
+    display: inline-block;
+    padding-right: 10px;
+    /* border: 2px solid black; */
+}
+
+/* Puzzle input styling */
+input {
+    color: black;
+    width: 20px;
+    text-align: center;
+    border-radius: 20%;
+    outline: none;
+    margin-right: 10px;
+    margin-left: 10px;
+    border: 2px solid black;
+    font-weight: bold;
+    background-color: aquamarine;
+    /* box-shadow: 0 0 5px aquamarine; */
+}
+
+/* Puzzle questions styling */
+.puzzle {
+    display: inline-block;
+    font-size: 18px;
+    margin-top: 2.5%;
+    padding: 10px 10px;
+    /* border: 2px solid red; */
+    border-radius: 20px;
+    border: 5px solid aquamarine;
+    /* box-shadow: 0 0 20px aquamarine; */
+}
+
+/* Bold styling for answers */
+.answer {
+    font-weight: bold;
+}
+
+/* Submit button styling */
+#submitBtn {
+    margin-top: 20px;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 15px;
+    font-weight: bold;
+    /* box-shadow: 0 0 20px aquamarine; */
+    border: 5px solid black;
+    color: #1f2833;
+    background-color: aquamarine;
+    /* box-shadow: 0 0 20px aquamarine; */
+}
+
+#submitBtn:hover {
+    background-color: #1f2833;
+    color: aquamarine;
+    border: 5px solid aquamarine;
+    transition: ease-in 0.3s;
+
+}
+   

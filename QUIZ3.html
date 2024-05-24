@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Level2 Quiz</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    var quiztitle = "Guess The Country?";
+
+   
+    var quiz = [
+        {
+            "question"      :   "HINT:The Birth Place Of Religions Like  Hinduism, Buddhism, Jainism, and Sikhism",
+            "image"         :   "https://thumbs.dreamstime.com/b/india-map-silhouette-vector-illustration-isolated-white-background-125706645.jpg",
+            "choices"       :   [
+                                    "India",
+                                    "USA",
+                                    "China",
+                                    "Japan"
+                                ],
+            "correct"       :   "India",
+            "explanation"   :   " INDIA - is the birth place of these 4 religions almost 25% of world population follows them. ",
+            "correctimage":"https://as1.ftcdn.net/v2/jpg/00/49/53/84/1000_F_49538425_9spq7apu4iOweBWGxuckkZ7vH4knh6Fh.jpg",
+        },
+      {
+            "question"      :   "HINT:It has won most World Cup title in Cricket ",
+            "image"         :   "aus.png",
+            "choices"       :   [
+                                    "Greece",
+                                    "Australia",
+                                    "USA",
+                                    "Japan"
+                                ],
+            "correct"       :   "Australia",
+            "explanation"   :   "Australia: their team won the most World Cup title i.e. 6 times. They won ICC Men's ODI World Cup in 1987, 1999, 2003, 2007, 2015 and 2023",
+              "correctimage":"ausans.png",
+        },
+        {
+            "question"      :   "HINT:The House Of King Ravana",
+            "image"         :   "https://www.shutterstock.com/image-vector/sri-lanka-outline-map-country-260nw-1169795866.jpg",
+            "choices"       :   [
+                                    "Kuwait",
+                                    "Russia",
+                                    "Sri Lanka",
+                                    "Bhutan"
+                                ],
+            "correct"       :   "Sri Lanka",
+            "explanation"   :   "Sri Lanka: It is believed that it was gifted to King Ravana by Lord Shiva After Being Impressed By his devotion.",
+            "correctimage":"sri.png",
+        },
+       {
+            "question"      :   "HINT:It has the city of LOVE",
+            "image"         :   "france.png",
+            "choices"       :   [
+                                    "England",
+                                    "USA",
+                                    "Maldives",
+                                    "France"
+                                ],
+            "correct"       :   "France",
+            "explanation"   :   "France: It has the city of Love Paris,which is famous for the great Eiffel Tower.",
+            "correctimage":"franceans.png",
+        },
+
+      {
+            "question"      :   "HINT:It is located between the European and Asian continents and thus called a transcontinental country.",
+            "image"         :   "tuk.png",
+            "choices"       :   [
+                                    "Türkiye",
+                                    "Russia",
+                                    "Sri Lanka",
+                                    "Bhutan"
+                                ],
+            "correct"       :   "Türkiye",
+            "explanation"   :   "Türkiye: Only 3% of the land area lie in Europe, 97% of the country lie on the Asian continent.",
+            "correctimage"  :"tukans.png",
+        },
+      
+
+    ];
+
+
+   
+    var currentquestion = 0, score = 0, submt=true, picked;
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+    //to print statements
+        function htmlEncode(value){
+            return document.createElement('div').appendChild(document.createTextNode(value)).parentNode.innerHTML;
+        }
+
+       //the option block
+        function addChoices(choices){
+            if(typeof choices !== "undefined" && Array.isArray(choices)){
+                var choiceBlock = document.getElementById('choice-block');
+                choiceBlock.innerHTML = "";
+
+                for(var i=0;i<choices.length; i++){
+                    var li = document.createElement('li');
+                    li.className = 'choice choice-box';
+                    li.setAttribute('data-index', i);
+                    li.textContent = choices[i];
+                    li.style.backgroundColor="white";
+                    choiceBlock.appendChild(li);
+                }
+            }
+        }
+        
+        
+        //Resets all of the fields to prepare for next question
+     
+        function nextQuestion(){
+            submt = true;
+            document.getElementById('explanation').innerHTML = "";
+            document.getElementById('question').textContent = quiz[currentquestion]['question'];
+            document.getElementById('pager').textContent = 'Question ' + Number(currentquestion + 1) + ' of ' + quiz.length;
+
+            if(quiz[currentquestion].hasOwnProperty('image') && quiz[currentquestion]['image'] != ""){
+                var questionImage = document.getElementById('question-image');
+
+                if(!questionImage){
+                    questionImage = document.createElement('img');
+                    questionImage.className = 'question-image';
+                    questionImage.id = 'question-image';
+                    document.getElementById('frame').appendChild(questionImage);
+                }
+
+                questionImage.src = quiz[currentquestion]['image'];
+
+                questionImage.alt = htmlEncode(quiz[currentquestion]['question']);
+            } 
+
+            else 
+            {
+                var questionImage = document.getElementById('question-image');
+                if(questionImage)
+                    questionImage.remove();
+            }
+            addChoices(quiz[currentquestion]['choices']);
+            setupButtons();
+        }
+
+       
+//After a selection is submitted, checks if its the right answer
+        
+        function processQuestion(choice){
+        var choiceElements = document.querySelectorAll('.choice');
+         //correct image
+        var questionImage = document.getElementById('question-image');        
+          
+    
+        if(quiz[currentquestion]['choices'][choice] == quiz[currentquestion]['correct']){
+                choiceElements[choice].style.backgroundColor = '#50D943';
+                var audio = new Audio('correctans.mp3'); // Path to your sound file
+            audio.play(); // Play the sound
+                document.getElementById('explanation').innerHTML = '<strong>Correct!</strong> ' + htmlEncode(quiz[currentquestion]['explanation']);
+                score++;
+        } 
+        else {
+                choiceElements[choice].style.backgroundColor = '#D92623';
+                var audio = new Audio('wrongans.mp3'); // Path to your sound file
+            audio.play(); // Play the sound
+                document.getElementById('explanation').innerHTML = '<strong>Incorrect.</strong> ' + htmlEncode(quiz[currentquestion]['explanation']);
+            }
+
+          
+            currentquestion++;
+
+            var submitButton = document.getElementById('submitbutton');
+            submitButton.textContent = 'Next Question»';
+            submitButton.onclick = function()
+            {
+                if(currentquestion == quiz.length){
+                    endQuiz();
+                } 
+
+                else {
+                    this.textContent = 'Check Answer';
+                    this.style.color = '#222';
+                    this.onclick = null;
+                    nextQuestion();
+                }
+            }
+        }
+
+        
+// formatting for each button.
+     
+        function setupButtons(){
+ var questionImage = document.getElementById('question-image');  
+            var choiceElements = document.querySelectorAll('.choice');
+            for(var i = 0; i < choiceElements.length; i++) {
+                choiceElements[i].onmouseover = function() {
+                    this.style.backgroundColor = '#e1e1e1';
+                };
+                choiceElements[i].onmouseout = function() {
+                    this.style.backgroundColor = '#fff';
+                };
+                choiceElements[i].onclick = function() {
+                    picked = parseInt(this.getAttribute('data-index'));
+                    for(var j = 0; j < choiceElements.length; j++) {
+                        choiceElements[j].removeAttribute('style');
+                        choiceElements[j].style.backgroundColor="#666257";
+                        choiceElements[j].onmouseout = choiceElements[j].onmouseover = null;
+                    }
+                    this.style.borderColor = '#222';
+                    this.style.fontWeight = '700';
+                    this.style.backgroundColor = '#bdb9af';
+                    if(submt){
+                        submt=false;
+
+                        var submitButton = document.getElementById('submitbutton');
+                        submitButton.style.color = '#000';
+                        submitButton.onclick = function(){
+                            changeImageWithFadeOutIn(questionImage, quiz[currentquestion]['correctimage']);
+                            for(var j = 0; j < choiceElements.length; j++) {
+                                choiceElements[j].onclick = null;
+                            }
+                            this.onclick = null;
+                            processQuestion(picked);
+                        };
+                    }
+                };
+            }
+        }
+        
+        
+//Quiz ends, display a message.
+      
+        function endQuiz(){
+             console.log("Executing endQuiz() function");
+            clearInterval(countdown); // Stop the timer
+            document.getElementById('explanation').innerHTML = "";
+            document.getElementById('question-image').remove();
+            document.getElementById('status').remove();
+            document.getElementById('pager').remove(); 
+            document.getElementById('choice-block').innerHTML = "";
+            document.getElementById('question').style.fontSize='1.5em';
+            document.getElementById('question').innerHTML = "You got " + score + " out of " + quiz.length + " correct.";
+            var percentage = Math.round(score/quiz.length * 100);
+            var last= document.createElement('h2');
+            last.textContent = percentage + '%';
+            last.style.textAlign = 'center';
+            last.style.fontSize = '25em';
+            document.getElementById('frame').appendChild(last);
+            var submitButton = document.getElementById('submitbutton');
+            submitButton.parentNode.removeChild(submitButton);
+            document.body.style.background = '#000';
+            playConfettiVideo() 
+
+var record = document.createElement('p');
+record.textContent="Your Record: ";
+record.id="record";
+record.style.color="white";
+frame.appendChild(record);
+
+
+var congratulationMessage = document.createElement('p');
+    if (percentage >= 70) {
+        congratulationMessage.textContent = "Congratulations! You did great!";
+    } else {
+        congratulationMessage.textContent = "You can do better! Keep practicing!";
+}
+   congratulationMessage.style.textAlign = 'center';
+    congratulationMessage.style.fontSize = '50px';
+    congratulationMessage.style.color = "white";
+    frame.appendChild(congratulationMessage);
+        }
+
+
+function changeImageWithFadeOutIn(imageElement, newSrc) {
+        $(imageElement).fadeOut(500, function() {
+            
+            $(this).attr('src', newSrc).fadeIn(1000);
+        });
+    }
+
+ function playConfettiVideo() {
+            var confettiVideo = document.getElementById('confettiVideo');
+            confettiVideo.style.display = 'block';
+        }
+
+       
+// Runs the first time and creates all of the elements for the quiz
+//initialization
+     
+        function init(){
+            var frame = document.getElementById('frame');
+            //add title
+            var h1 = document.createElement('h1');
+            h1.textContent = quiztitle || "Quiz";
+            frame.appendChild(h1);
+
+            //add pager and questions
+            var pager = document.createElement('div');
+            pager.className = 'pager';
+            pager.id = 'pager';
+            pager.textContent = 'Question 1 of ' + quiz.length;
+            frame.appendChild(pager);
+            
+            var h2 = document.createElement('h2');
+            h2.className = 'question';
+            h2.id = 'question';
+            h2.textContent = quiz[0]['question'];
+            frame.appendChild(h2);
+            
+            if(quiz[0].hasOwnProperty('image') && quiz[0]['image'] != ""){
+                var questionImage = document.createElement('img');
+                questionImage.className = 'question-image';
+                questionImage.id = 'question-image';
+                questionImage.src = quiz[0]['image'];
+                questionImage.alt = htmlEncode(quiz[0]['question']);
+                frame.appendChild(questionImage);
+            }
+
+            var explanation = document.createElement('p');
+            explanation.className = 'explanation';
+            explanation.id = 'explanation';
+            explanation.innerHTML = '&nbsp;';
+            frame.appendChild(explanation);
+            
+            var choiceBlock = document.createElement('ul');
+            choiceBlock.id = 'choice-block';
+            frame.appendChild(choiceBlock);
+            
+            addChoices(quiz[0]['choices']);
+            
+            var submitButton = document.createElement('div');
+            submitButton.className = 'choice-box';
+            submitButton.id = 'submitbutton';
+            submitButton.textContent = 'Check Answer';
+            submitButton.style.fontWeight = '700';
+            submitButton.style.color = '#222';
+            frame.appendChild(submitButton);
+            
+            setupButtons();
+        }
+        
+         init();
+   
+
+//----------------------TIMER------------------------------------------
+
+        var timeLeft =45; // Set the time limit in seconds
+      
+       
+    var countdown = setInterval(function() {
+    document.getElementById('timers').innerHTML = timeLeft + " seconds";
+    if (timeLeft <= 0) {
+        clearInterval(countdown); // Stop the countdown
+        endQuiz() // Call your function to end the quiz when time is up
+    } else {
+        timeLeft--; // Decrement after updating the displayed time
+    }
+}, 1000);
+    
+ });
+</script>
+    
+    <style type="text/css" media="all">
+       
+        html,body,div,span,h2,h3,h4,h5,h6,p,code,small,strike,strong,sub,sup,b,u,i
+        { 
+           border:0;
+           font-size:100%;
+           font:inherit;
+           vertical-align:baseline;
+           margin:0px;padding:0;
+        } 
+
+
+        body{  
+               background: url("https://png.pngtree.com/background/20230522/original/pngtree-dark-background-with-a-colorful-network-of-lines-and-dots-picture-image_2686588.jpg");
+               background-repeat:no-repeat; 
+               background-size:cover;
+               	
+            } 
+
+        ol,ul{
+               list-style:none;
+            }
+
+        strong{
+                font-weight:700;
+            }
+
+        #frame{
+                display:block;
+                height:640px; 
+                padding:5px;
+                margin:11px 10px;
+            }
+
+        h1{
+             font-size:50px;
+             color:white;
+             font-family:serif;
+             font:normal bolds;
+             text-align:center;
+             border-bottom:3px solid #999;
+             margin:5px;
+             padding-bottom:14px;
+             width:auto;
+          }
+
+        h2{
+            font:italic bold ;
+            font-size:20px ; 
+            letter-spacing: 1.5px;
+            color:white;
+            padding:0;
+            text-align:left;
+            margin:30px ;
+        }
+
+        div.pager{
+                   margin:5px; 
+                   padding:15px;
+                   font:bold;
+                   color:white;
+                   font-size:22px;
+                   position:absolute;
+                   left:1330px;
+                   bottom:20px;
+                   background-color: rgba(255, 255, 255, 0.6);
+                   border-radius: 50px;}
+
+        img.question-image{
+                           display:block;
+                           margin:7px;
+                           margin-left:60px;
+                           border:1px solid #ccc;
+                           height:490px;
+                           width:500px;
+                           }
+
+
+        #choice-block{ display: grid;
+                       grid: auto/ auto auto;
+                       grid-gap: 15px 10px;
+                       position:absolute; 
+                       left:660px;
+                       top:320px;
+                       list-style:none;
+                       margin:0px;
+                       padding:0px;
+                       }
+
+        #submitbutton{
+                      background:#9ed6e8;
+                      padding:10px 80px;
+                      position:absolute;
+                      left:810px;
+                      bottom:140px;
+                      }
+
+        #submitbutton:hover{background:#136580;}
+
+        #explanation{
+                       font-weight:bold;
+                       color:white;
+                       font-size:22px;
+                       margin:0 auto;
+                       padding:20px;
+                       position:absolute;
+                       top:200px;
+                       left:650px;
+                       line-height:2.0;
+                    }
+
+        .choice-box{
+                     
+                     text-align:center;
+                     font-size:50px;
+                     margin:1px;
+                     padding:5px 120px;
+                     border:1px solid #666;
+                     border-radius:14px;
+                     cursor:pointer;
+                   }
+#timers {
+    font-size: 40px;
+    font-weight: bold;
+    color: white;
+    background-color:#0abfa7;
+    padding: 10px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+    position:absolute;
+    top:140px;
+    left:1250px;
+    height:49px;
+    width:200px;
+}
+#status{
+    font-size: 20px;
+    color: white;
+    position:absolute;
+    top:110px;
+    left:1310px;
+    height:49px;
+    width:200px;
+}
+
+#record{
+ font-size: 29px;
+ position:absolute;
+ top:153px;
+ right:300px;
+}
+
+    </style>
+</head>
+<body>
+    <div id="frame" role="content"></div>
+ <div id="status">Time Left:</div> 
+ <div id="timers"> 45 seconds</div>    
+    <video id="confettiVideo" width="100%" height="100%" autoplay loop muted style="position: fixed; top: 0; left: 0; z-index: -1;display: none;">
+        <source src="crackers.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</body>
+</html>
